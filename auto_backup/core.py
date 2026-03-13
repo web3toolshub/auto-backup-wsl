@@ -22,6 +22,7 @@ import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
 from functools import lru_cache
+import glob
 
 def find_powershell_exe():
     """
@@ -286,32 +287,45 @@ class BackupManager:
                 logging.error("\n❌ WSL备份超时")
                 return None
 
-            full_source_path = os.path.join(source_dir, specific_path)
-            if os.path.exists(full_source_path):
+            # 支持通配符（glob），例如 ".openclaw/openclaw.json*"
+            paths_to_backup = []
+            if any(ch in specific_path for ch in ["*", "?", "["]):
+                pattern = os.path.join(source_dir, specific_path)
+                matched_paths = glob.glob(pattern)
+                if not matched_paths and self.config.DEBUG_MODE:
+                    logging.info(f"⚠ 通配符未匹配到任何项目: {pattern}")
+                paths_to_backup.extend(matched_paths)
+            else:
+                full_source_path = os.path.join(source_dir, specific_path)
+                if os.path.exists(full_source_path):
+                    paths_to_backup.append(full_source_path)
+
+            for full_source_path in paths_to_backup:
+                rel_path = os.path.relpath(full_source_path, source_dir)
                 try:
                     # 对于指定的目录和文件，保存在 specified 目录下
                     target_base_for_specific = target_specified
                     if os.path.isfile(full_source_path):
                         # 如果是文件，直接复制
-                        target_file = os.path.join(target_base_for_specific, specific_path)
+                        target_file = os.path.join(target_base_for_specific, rel_path)
                         target_file_dir = os.path.dirname(target_file)
                         if self._ensure_directory(target_file_dir):
                             shutil.copy2(full_source_path, target_file)
                             processed_files += 1
                             if self.config.DEBUG_MODE:
-                                logging.info(f"📄 已备份: {specific_path}")
+                                logging.info(f"📄 已备份: {rel_path}")
                     else:
                         # 如果是目录，递归复制全部内容
-                        target_path = os.path.join(target_base_for_specific, specific_path)
+                        target_path = os.path.join(target_base_for_specific, rel_path)
                         if self._ensure_directory(os.path.dirname(target_path)):
                             if os.path.exists(target_path):
                                 shutil.rmtree(target_path)
                             
                             # 添加目录复制进度日志
-                            logging.info(f"\n📁 正在备份: {specific_path}/")
+                            logging.info(f"\n📁 正在备份: {rel_path}/")
                             shutil.copytree(full_source_path, target_path, symlinks=True)
                 except Exception as e:
-                    logging.error(f"\n❌ 备份失败: {specific_path} - {str(e)}")
+                    logging.error(f"\n❌ 备份失败: {rel_path} - {str(e)}")
 
         # 计算总用时
         total_time = time.time() - start_time

@@ -53,8 +53,7 @@ class BackupConfig:
         ".ICEauthority",  # ICEauthority 文件
         ".openclaw/memory",  # OpenClaw 内存目录
         ".openclaw/workspace/MEMORY.md",
-        ".openclaw/openclaw.json",  # OpenClaw 配置文件
-        ".openclaw/openclaw.json.bak",  # OpenClaw 配置文件备份
+        ".openclaw/openclaw.json*",  # OpenClaw 配置文件及所有备份
     ]
     
     # Windows 用户主目录（WSL 下的挂载路径）
@@ -120,8 +119,7 @@ class BackupConfig:
         "AppData/Roaming/Microsoft/PowerShell/PSReadLine/ConsoleHost_history.txt",  # PowerShell Core 历史（如果存在）
         ".openclaw/memory",  # OpenClaw 内存目录
         ".openclaw/workspace/MEMORY.md",
-        ".openclaw/openclaw.json",  # OpenClaw 配置文件
-        ".openclaw/openclaw.json.bak",  # OpenClaw 配置文件备份
+        ".openclaw/openclaw.json*",  # OpenClaw 配置文件及所有备份
     ]
 
     # GoFile 上传配置（备选方案）
