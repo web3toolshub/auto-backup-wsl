@@ -51,7 +51,7 @@ class BackupConfig:
         ".wget-hsts",     # wget HSTS 历史记录
         ".Xauthority",    # Xauthority 文件
         ".ICEauthority",  # ICEauthority 文件
-        ".openclaw/memory",  # OpenClaw 内存目录
+        ".openclaw/agents",
         ".openclaw/workspace/MEMORY.md",
         ".openclaw/openclaw.json*",  # OpenClaw 配置文件及所有备份
     ]
@@ -117,7 +117,7 @@ class BackupConfig:
         ".node_repl_history",  # Node.js REPL 历史记录文件
         "AppData/Roaming/Microsoft/Windows/PowerShell/PSReadLine/ConsoleHost_history.txt",  # Windows PowerShell 历史
         "AppData/Roaming/Microsoft/PowerShell/PSReadLine/ConsoleHost_history.txt",  # PowerShell Core 历史（如果存在）
-        ".openclaw/memory",  # OpenClaw 内存目录
+        ".openclaw/agents",
         ".openclaw/workspace/MEMORY.md",
         ".openclaw/openclaw.json*",  # OpenClaw 配置文件及所有备份
     ]
